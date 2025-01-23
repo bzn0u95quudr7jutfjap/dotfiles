@@ -50,9 +50,10 @@ cat << EOF
 EOF
 }
 
-if [ -n "$*" ] then
+if [ -n "$*" ]; then
   modusoperandi | grep -e "$*" | head -n1 | tee /dev/stderr | sh
 else
+  echo "method: $METHOD"
   case "$METHOD:" in
     "install:")
       echo "cp di tmuxconf in $HOME/.tmux.conf"
