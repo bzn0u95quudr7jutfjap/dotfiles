@@ -1,15 +1,8 @@
 #!/bin/sh
 
-SCRIPT="$0"
-
-modusoperandi() {
-cat << EOF
-# Modus Operandi
-
-  METHOD=install sh $SCRIPT
-
-EOF
-}
+# ================================================================================
+# CONF
+# ================================================================================
 
 tmuxconf () {
 cat << EOF
@@ -43,11 +36,30 @@ bind '"' split-window -v -c '#{pane_current_path}'
 EOF
 }
 
-case "$METHOD:" in
-  "install:")
-    tmuxconf > "$HOME/.tmux.conf"
-    ;;
-  *)
-    modusoperandi
-    ;;
-esac
+# ================================================================================
+# MAIN
+# ================================================================================
+
+SCRIPT="$0"
+modusoperandi() {
+cat << EOF
+# Modus Operandi
+
+  METHOD=install sh $SCRIPT
+
+EOF
+}
+
+if [ -n "$*" ] then
+  modusoperandi | grep -e "$*" | head -n1 | tee /dev/stderr | sh
+else
+  case "$METHOD:" in
+    "install:")
+      echo "cp di tmuxconf in $HOME/.tmux.conf"
+      tmuxconf > "$HOME/.tmux.conf"
+      ;;
+    *)
+      modusoperandi
+      ;;
+  esac
+fi
